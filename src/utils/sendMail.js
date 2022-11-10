@@ -2,8 +2,8 @@ import nodemailer from "nodemailer";
 
 const sendEmail = async (options) => {
     console.log("email function");
-  console.log(options.email);
-  console.log(options.message)
+  // console.log(options.email);
+  // console.log(options.message)
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -19,7 +19,7 @@ const sendEmail = async (options) => {
     text: options.message,
   };
 
-  await transporter.sendMail(mailOptions, (err, info) => {
+  transporter.sendMail(mailOptions, (err, info) => {
     if (err) {
       console.log("err");
     }
