@@ -183,7 +183,7 @@ const EODMail = async () => {
 //     }
 // }
 
-exports.croToDos = cron.schedule(" */20 * * * * * ", () => {
+exports.croToDos = cron.schedule(" * */10 * * * ", () => {
   EODMail();
 });
 
