@@ -146,27 +146,28 @@ exports.previousToDos = async (req, res) => {
   }
 };
 
-const EODMail = async ()=>{
-  try {
-    const todoByDate = await ToDo.find({ taskDate: "09/11/2022" });
-    let message = "";
-    let userMailID;
-    todoByDate.forEach(async (element) => {
-      message = message + "\n" + `the toDo for ${element.user} : ${element.toDos} is in the status of "${element.status}"`;
-      userMailID = await User.find({ _id: element.user });
-      userMailID.forEach(element=>{
-        sendMail({
-            message:message,
-            email:element.email,
-            subject: "Daily To Do List"
-        })
-      })
+
+const EODMail = async () => {
+  try{
+    const toDoByStatus = await ToDo.find({status: "Unstarted"});
+    const userTodo = await User.findOne({ _id: toDoByStatus[0].user });
+    let nameOfUser = userTodo.name;
+    let EODMessage = `Pending tasks of User : ${nameOfUser}`;
+    let tasks = "";
+    toDoByStatus.forEach(async (todotask) => {
+      tasks = `${tasks} \n => ${todotask.toDos}`;
     });
-    // });
-  } catch (err) {
+    sendMail({
+      message: `${EODMessage}\n ${tasks}`,
+      email: userTodo.email,
+      subject: "To Do List APP"
+    });
+  }
+  catch(err){
     console.log(err);
   }
-}
+};
+
 
 // const EODMail = async ()=>{
 //     try{
@@ -182,7 +183,7 @@ const EODMail = async ()=>{
 //     }
 // }
 
-exports.croToDos = cron.schedule(" * */10 * * * ", () => {
+exports.croToDos = cron.schedule(" */20 * * * * * ", () => {
   EODMail();
 });
 
